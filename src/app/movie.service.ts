@@ -1,0 +1,56 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { retry, catchError } from 'rxjs/operators';
+import { Movie } from './movie';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MovieService {
+	BASE_URL = 'http://localhost:3000';
+	HTTP_OPTIONS = {
+		headers: new HttpHeaders({
+			'Content-Type': 'application/json',
+		}),
+	};
+	
+	constructor(private http: HttpClient) {
+		
+	}
+	
+	CreateMovie(movie: Movie): Observable<Movie> {
+		console.log(JSON.stringify(movie));
+		return this.http.post<Movie>(this.BASE_URL + '/movies/', JSON.stringify(movie), this.HTTP_OPTIONS).pipe(retry(1), catchError(this.errorHandle));
+	}
+	
+	GetMovie(id: string): Observable<Movie> {
+		return this.http.get<Movie>(this.BASE_URL + '/movies/' + id, this.HTTP_OPTIONS).pipe(retry(1), catchError(this.errorHandle));
+	}
+
+	GetMovies(): Observable<Movie> {
+		return this.http.get<Movie>(this.BASE_URL + '/movies/', this.HTTP_OPTIONS).pipe(retry(1), catchError(this.errorHandle));
+	}
+
+	UpdateMovie(id: string, movie: Movie): Observable<Movie> {
+		return this.http.put<Movie>(this.BASE_URL + '/movies/' + id, JSON.stringify(movie), this.HTTP_OPTIONS).pipe(retry(1), catchError(this.errorHandle));
+	}
+	
+	errorHandle(error: any) {
+		console.log(error);
+		/*
+		let errorMessage = '';
+		if (error.error instanceof ErrorEvent) {
+		  // Get client-side error
+		  errorMessage = error.error.message;
+		} else {
+		  // Get server-side error
+		  errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+		}
+		console.log(errorMessage);
+		*/
+		return throwError(() => {
+			return error.error.message;
+		});
+	}
+}

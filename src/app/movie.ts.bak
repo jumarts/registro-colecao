@@ -1,0 +1,15 @@
+export class Movie {
+   id: number;
+   name: string;
+   sinopse: string;
+   ano: number;
+   rank: number;
+   
+   constructor(id: number, name: string, sinopse: string, ano: number, rank: number) {
+	   this.id = id;
+	   this.name = name;
+	   this.sinopse = sinopse;
+	   this.ano = ano;
+	   this.rank = rank;
+   }
+}

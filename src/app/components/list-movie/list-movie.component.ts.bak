@@ -1,0 +1,23 @@
+import { Component, OnInit } from '@angular/core';
+import { MovieService } from '../../movie.service';
+
+@Component({
+  selector: 'app-list-movie',
+  templateUrl: './list-movie.component.html',
+  styleUrls: ['./list-movie.component.css']
+})
+export class ListMovieComponent implements OnInit {
+	moviesList: any = [];
+
+	ngOnInit() {
+		this.loadMovies();
+	}
+	
+	constructor(public movieService: MovieService){ }
+	
+	loadMovies() {
+		return this.movieService.GetMovies().subscribe((data: {}) => {
+			this.moviesList = data;
+		})
+	}
+}

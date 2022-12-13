@@ -1,0 +1,46 @@
+import { Component, OnInit, NgZone } from '@angular/core';
+import { MovieService } from '../../movie.service';
+import { FormBuilder, FormGroup} from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-edit-movie',
+  templateUrl: './edit-movie.component.html',
+  styleUrls: ['./edit-movie.component.css']
+})
+export class EditMovieComponent implements OnInit {
+	movieList: any = [];
+	updateMovieForm: FormGroup;
+	  
+	ngOnInit() {
+		this.updateForm()
+	}
+	
+	constructor(private actRoute: ActivatedRoute, public movieService: MovieService, public fb: FormBuilder, private ngZone: NgZone, private router: Router) { 
+		var id = this.actRoute.snapshot.paramMap.get('id')!;
+		this.movieService.GetMovie(id).subscribe((data) => {
+			this.updateMovieForm = this.fb.group({
+				nome: [data.nome],
+				sinopse: [data.sinopse],
+				ano: [data.ano],
+				rank: [data.rank]
+			})
+		})
+	}
+	
+	updateForm(){
+		this.updateMovieForm = this.fb.group({
+			  nome: [''],
+			  sinopse: [''],
+			  ano: [0],
+			  rank: [0]
+		})    
+	}
+	
+	submitForm(){ 
+		var id = this.actRoute.snapshot.paramMap.get('id')!;
+		this.movieService.UpdateMovie(id, this.updateMovieForm.value).subscribe(res => {
+			this.ngZone.run(() => this.router.navigateByUrl('/list'))
+		})
+	}
+}
