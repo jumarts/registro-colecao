@@ -53,6 +53,6 @@ app.put('/movies', (req, res) => {
     res.end(JSON.stringify(movieList));
 })
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
 	console.log(`Example app listening on port ${port}`)
 })
